@@ -10,7 +10,7 @@ BEGIN
     # Simple function call
     my $R = R::Writer->new();
     $R->call("demo", "plotmath");
-    like($R->as_string, qr/demo\("plotmath"\);\n/);
+    like($R->as_string, qr/demo\("plotmath"\);/);
 }
 
 {
@@ -43,9 +43,8 @@ BEGIN
     # cat(y);
 
     my $R = R::Writer->new;
-    $R->var(x => 1)
-         ->var(y => 'x + 1')
-         ->call(cat => \'y')
-    ;
+    $R->var(x => 1);
+    $R->var(y => 'x + 1');
+    $R->call(cat => \'y');
     is( $R->as_string, qq/x <- 1;\ny <- x + 1;\ncat(y);\n/);
 }

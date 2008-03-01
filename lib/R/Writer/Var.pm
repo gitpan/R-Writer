@@ -1,4 +1,7 @@
-# $Id: /mirror/coderepos/lang/perl/R-Writer/trunk/lib/R/Writer/Var.pm 42804 2008-02-25T10:17:18.239702Z daisuke  $
+# $Id: /mirror/coderepos/lang/perl/R-Writer/trunk/lib/R/Writer/Var.pm 43085 2008-03-01T12:28:42.888222Z daisuke  $
+# 
+# Copyright (c) 2008 Daisuke Maki <daisuke2endeworks.jp>
+# All rights reserved.
 
 package R::Writer::Var;
 use strict;
@@ -17,6 +20,7 @@ sub new
 sub as_string
 {
     my $self  = shift;
+    my $c     = shift;
     my $var   = $self->name;
     my $value = $self->value;
 
@@ -33,10 +37,10 @@ sub as_string
         $s = "$var <- " . $self->encoder->encode($value) . ";"
     }
     elsif ($ref eq 'CODE') {
-        $s = "$var <- " . $self->function($value);
+        $s = "$var <- " . $c->__obj_as_string($value->());
     }
     elsif ($ref =~ /^R::Writer/) {
-        $s = "$var <- " . $value->as_string();
+        $s = "$var <- " . $value->as_string($c);
     }
     elsif ($ref eq 'REF') {
         my $j = $self->new;
@@ -45,7 +49,7 @@ sub as_string
     }
     elsif ($ref eq 'SCALAR') {
         if (defined $$value) {
-            my $v = $self->obj_as_string($value);
+            my $v = $self->__obj_as_string($value);
 
             $s = "var $var = $v;";
         }
@@ -68,3 +72,22 @@ sub as_string
 }
 
 1;
+
+__END__
+
+=head1 NAME
+
+R::Writer::Var - Variables
+
+=head1 SYNOPSIS
+
+  use R::Writer::Var;
+  # Internal use only
+
+=head1 METHODS
+
+=head2 new
+
+=head2 as_string
+
+=cut
